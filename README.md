@@ -54,6 +54,11 @@ make -C initrd
 ```
 The generated initrd.img image file will be located in the current folder.
 
+Gzip the initrd.img file to get a boot image:
+```
+gzip initrd.img > boot.img
+```
+
 ### 3) Creating a Debian root filesystem image
 Install the needed packages:
 ```
