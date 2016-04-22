@@ -1,6 +1,20 @@
 # iMito QX1
 Unofficial Android/Linux support for iMito QX1
 
+### Installing Rockchip utils (rkutils)
+```
+mkdir rockchip
+cd rockchip
+git clone https://github.com/naobsd/rkutils.git
+cd rkutils
+for f in *.c; do gcc $f -o ${f%.*}; done
+rkutils="$(pwd)"
+cat <<EOF >>  ~/.bashrc
+export PATH="$rkutils:$PATH"
+EOF
+source ~/.bashrc
+```
+
 ### 1) Building a linux kernel for the iMito QX1
 
 **Install dependencies:**
@@ -182,6 +196,11 @@ Add a new line with the address 127.0.1.1 and your hostname:
 Deploy kernel modules:
 ```
 depmod -a 3.0.36+
+```
+
+Load wifi at boot:
+```
+echo wlan >> /etc/modules
 ```
 
 We are done inside the chroot, so quit the chroot shell
