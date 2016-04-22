@@ -56,7 +56,12 @@ The generated initrd.img image file will be located in the current folder.
 
 Gzip the initrd.img file to get a boot image:
 ```
-gzip -c initrd.img > boot.img
+gzip -c initrd.img > boot-unsigned.img
+```
+
+Finally, sign the image:
+```
+rkcrc -k boot-unsigned.img boot.img
 ```
 
 ### 3) Creating a Debian root filesystem image
@@ -197,6 +202,25 @@ sudo umount $targetdir/{proc,sys,dev/pts,dev,}
 
 ###4) Creating parameter.img
 Create parameter file:
+
+a) With framebuffer console enabled
+```
+cat <<EOT > parameter
+FIRMWARE_VER:4.2.2
+MACHINE_MODEL:radxa_rock
+MACHINE_ID:007
+MANUFACTURER:RADXA
+MAGIC: 0x5041524B
+ATAG: 0x60000800
+MACHINE: 3066
+CHECK_MASK: 0x80
+KERNEL_IMG: 0x60408000
+#RECOVER_KEY: 1,1,0,20,0
+CMDLINE:console=ttyFIQ0 console=tty0 root=/dev/mmcblk0p1 rw rootfstype=ext4 rootdelay=10 init=/sbin/init initrd=0x62000000,0x002F0000 mtdparts=rk29xxnand:0x00002000@0x00002000(misc),0x00008000@0x00004000(kernel),0x00008000@0x0000c000(boot)
+EOT
+```
+
+b) With framebuffer console disabled (required for machybris)
 ```
 cat <<EOT > parameter
 FIRMWARE_VER:4.2.2
@@ -212,6 +236,7 @@ KERNEL_IMG: 0x60408000
 CMDLINE:fbcon=vc:64-63 console=ttyFIQ0 console=tty0 root=/dev/mmcblk0p1 rw rootfstype=ext4 rootdelay=10 init=/sbin/init initrd=0x62000000,0x002F0000 mtdparts=rk29xxnand:0x00002000@0x00002000(misc),0x00008000@0x00004000(kernel),0x00008000@0x0000c000(boot)
 EOT
 ```
+
 Sign the parameter file:
 ```
 rkcrc -p parameter parameter.img
