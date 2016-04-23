@@ -15,6 +15,54 @@ EOF
 source ~/.bashrc
 ```
 
+### Installing bluetooth (RDA 5876)
+Install dependencies:
+```
+sudo apt-get install libusb-dev libdbus-1-dev libglib2.0-dev automake libudev-dev libical-dev libreadline-dev build-essential libtool checkinstall
+```
+
+Install Bluez with RDA support:
+```
+git clone https://github.com/BalintBanyasz/bluez-rda.git bluez-rda
+cd bluez-rda
+libtoolize
+aclocal
+autoconf
+autoheader
+automake --add-missing
+./configure --prefix=/usr --mandir=/usr/share/man --sysconfdir=/etc --localstatedir=/var --libexecdir=/lib
+make
+sudo checkinstall # Change version from rda to 4.101
+sudo dpkg -i bluez_4.101-1_armhf.deb
+sudo apt-mark hold bluez
+```
+
+Unfortunately, bluetooth.service dies at boot when started automatically:
+```
+#sudo systemctl enable bluetooth
+#sudo reboot
+#sudo systemctl status bluetooth
+● bluetooth.service - Bluetooth service
+ Loaded: loaded (/lib/systemd/system/bluetooth.service; enabled)
+ Active: inactive (dead)
+```
+
+Add the following lines to rc.local before the line 'exit 0':
+```
+sudo nano /etc/rc.local
+
+# Start bluetooth service and attach rda-bt
+systemctl start bluetooth.service
+/usr/sbin/hciattach -s 115200 /dev/ttyS0 rda 1500000 flow
+```
+
+Install Blueman:
+```
+sudo apt-get install obex-data-server
+wget https://github.com/radxa/apt/raw/gh-pages/rabian-stable/pool/main/b/blueman/blueman_1.23-git201403102151-1ubuntu1_armhf.deb
+sudo dpkg -i blueman_1.23-git201403102151-1ubuntu1_armhf.deb
+```
+
 ### 1) Building a linux kernel for the iMito QX1
 
 **Install dependencies:**
@@ -177,12 +225,6 @@ Set a root password so you can login:
 passwd
 ```
 
-You should also add a new user if you intend to run X (replace debian with your actual username):
-```
-adduser debian
-adduser debian sudo
-```
-
 Set the hostname
 ```
 echo iMito-QX1 > /etc/hostname
@@ -201,6 +243,48 @@ depmod -a 3.0.36+
 Load wifi at boot:
 ```
 echo wlan >> /etc/modules
+```
+
+####Installing X
+You cannot run X as root (actually it's possible, but it's a bad practice), so you have to add new user to run X.
+<pre>adduser <b>debian</b></pre>
+<pre>adduser <b>debian</b> sudo</pre>
+
+Install Xorg:
+```
+apt-get install xorg
+```
+
+Install LXDE:
+```
+apt-get install lxde
+```
+
+Modify lightdm configuration to enable autologin:
+<pre>
+nano /etc/lightdm/lightdm.conf
+autologin-user=<b>debian</b>
+autologin-user-timeout=0
+</pre>
+
+The RTL8189ES WiFi adapter seems to work better with NetworkManager, so let's replace Wicd with it:
+```
+apt-get purge --auto-remove wicd wicd-daemon
+apt-get install network-manager-gnome
+```
+
+####Installing machybris and mackodi
+Download and install machybris:
+```
+wget http://mac-l1.com/v0.1.2/machybris-rk3188_4.4.2-0.1.2_armhf.deb
+sudo dpkg -i --force-all,confnew machybris-rk3188_4.4.2-0.1.2_armhf.deb
+sudo apt-get install -f
+```
+Download and install mackodi:
+```
+wget http://mac-l1.com/v0.1.1/mackodi_isengard-jessie-0.1.1_armhf.deb
+sudo dpkg -i --force-all,confnew mackodi_isengard-jessie-0.1.1_armhf.deb
+sudo apt-get install -f
 ```
 
 We are done inside the chroot, so quit the chroot shell
