@@ -61,6 +61,130 @@ Install Blueman:
 sudo apt-get install obex-data-server
 wget https://github.com/radxa/apt/raw/gh-pages/rabian-stable/pool/main/b/blueman/blueman_1.23-git201403102151-1ubuntu1_armhf.deb
 sudo dpkg -i blueman_1.23-git201403102151-1ubuntu1_armhf.deb
+sudo apt-mark hold blueman
+```
+
+Uncomment the line 'NotShowIn=LXDE' in /etc/xdg/autostart/blueman.desktop.
+
+### Installing Mali GPU drivers
+Copy drm.ko, mali_drm.ko, ump.ko and mali.ko into /lib/modules/3.0.36+
+```
+sudo depmod -a 3.0.36+
+```
+Append the following lines to the end of /etc/modules:
+```
+drm
+mali_drm
+ump
+mali
+```
+Create an udev rule to fix permissions:
+```
+sudo nano /etc/udev/rules.d/99-mali.rules
+KERNEL=="mali",SUBSYSTEM=="misc",MODE="0777",GROUP="video"
+KERNEL=="ump",SUBSYSTEM=="ump",MODE="0777",GROUP="video"
+KERNEL=="card0",SUBSYSTEM=="drm",MODE="0666"
+```
+
+####Installing the UMP (Unified Memory Provider) userspace library
+Install prequisites
+```
+sudo apt-get install git build-essential autoconf libtool
+```
+Clone the repo
+```
+git clone https://github.com/linux-sunxi/libump.git
+cd libump
+```
+Build package
+```
+sudo apt-get install debhelper dh-autoreconf fakeroot pkg-config
+dpkg-buildpackage -b
+sudo dpkg -i ../libump_*.deb
+```
+####Installing the Mali userspace driver
+Install prequisites
+```
+sudo apt-get install git build-essential autoconf automake
+```
+Clone the repo
+```
+git clone --recursive https://github.com/linux-sunxi/sunxi-mali.git
+cd sunxi-mali
+```
+Configure
+```
+make config
+```
+Make sure that config return the following:
+```
+ABI="armhf" (Detected)
+VERSION="r3p2-01rel1" (Detected)
+EGL_TYPE="x11" (Detected)
+echo "MALI_VERSION ?= r3p2-01rel1" > config.mk
+echo "MALI_LIBS_ABI ?= armhf" >> config.mk
+echo "MALI_EGL_TYPE ?= x11" >> config.mk
+make[2]: Leaving directory '/home/debian/src/sunxi-mali'
+make[1]: Leaving directory '/home/debian/src/sunxi-mali'
+```
+
+Install
+```
+sudo make install
+```
+####Installing xf86-video-fbturbo
+Install prequisites
+```
+sudo apt-get install git build-essential xorg-dev xutils-dev x11proto-dri2-dev
+sudo apt-get install libltdl-dev libtool automake libdrm-dev
+```
+Get the sources of xf86-video-fbturbo
+```
+git clone  -b mali-r3p2-support --single-branch https://github.com/ssvb/xf86-video-fbturbo.git
+cd xf86-video-fbturbo
+```
+Compile by running:
+```
+autoreconf -vi
+./configure --prefix=/usr
+```
+Make sure that configure returns the following:
+```
+checking ump/ump.h usability... yes
+checking ump/ump.h presence... yes
+checking for ump/ump.h... yes
+checking for ump_open in -lUMP... yes
+checking for ump_cache_operations_control in -lUMP... yes
+```
+Make:
+```
+make
+```
+Then install:
+```
+sudo make install
+```
+Setup xorg.conf:
+Backup existing file if you have machybris installed:
+```
+sudo mv /etc/X11/xorg.conf /etc/X11/xorg.conf.libhybris
+```
+
+```
+sudo cp xorg.conf /etc/X11/xorg.conf.mali
+sudo rm /etc/X11/xorg.conf
+sudo ln -s /etc/X11/xorg.conf.mali /etc/X11/xorg.conf
+```
+
+Move the mesa-egl aside:
+```
+sudo mv /usr/lib/arm-linux-gnueabihf/mesa-egl/ /usr/lib/arm-linux-gnueabihf/.mesa-egl/
+```
+Move the lima drivers out of the search path:
+```
+sudo mkdir /usr/lib/arm-linux-gnueabihf/bak
+sudo mv /usr/lib/arm-linux-gnueabihf/libGLES* /usr/lib/arm-linux-gnueabihf/bak
+sudo mv /usr/lib/arm-linux-gnueabihf/libEGL* /usr/lib/arm-linux-gnueabihf/bak
 ```
 
 ### 1) Building a linux kernel for the iMito QX1
