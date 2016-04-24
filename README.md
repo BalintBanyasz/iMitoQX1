@@ -411,6 +411,13 @@ sudo dpkg -i --force-all,confnew mackodi_isengard-jessie-0.1.1_armhf.deb
 sudo apt-get install -f
 ```
 
+Apply sound fix:
+```
+wget http://mac-l1.com/v0.1.1/fix_sound.sh
+sudo chmod +x fix_sound.sh
+sudo ./fix_sound.sh
+```
+
 We are done inside the chroot, so quit the chroot shell
 ```
 exit
