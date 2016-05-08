@@ -47,7 +47,7 @@ Unfortunately, bluetooth.service dies at boot when started automatically:
  Active: inactive (dead)
 ```
 
-Add the following lines to rc.local before the line 'exit 0':
+Add the following lines to rc.local before the line 'exit 0' to activate bluetooth on startup:
 ```
 sudo nano /etc/rc.local
 
@@ -116,7 +116,7 @@ Configure
 ```
 make config
 ```
-Make sure that config return the following:
+The Mali kernel modules must be loaded, otherwise the correct settings won't be auto-detected. Make sure that config returns the following:
 ```
 ABI="armhf" (Detected)
 VERSION="r3p2-01rel1" (Detected)
@@ -219,15 +219,20 @@ cd rockchip-3.0-rbox-kk
 make mrproper
 make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- rk3188_imito_qx1_linux_defconfig
 make -j$(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
- 
-# sign the kernel image
+ ```
+**Sign the kernel image:**
+```
 rkcrc -k arch/arm/boot/zImage kernel.img
+```
  
-# build the kernel modules
+**Build the kernel modules:**
+```
 mkdir modules
 make -j$(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- INSTALL_MOD_PATH=modules modules modules_install
- 
-# remove symlinks that point to files we do not need in root fs
+```
+
+**Remove symlinks that point to files we do not need in root fs:**
+```
 cd modules
 find . -name source | xargs rm
 find . -name build | xargs rm
@@ -240,7 +245,7 @@ make -C initrd
 ```
 The generated initrd.img image file will be located in the current folder.
 
-Gzip the initrd.img file to get a boot image:
+Gzip the initrd.img file to get a compressed boot image:
 ```
 gzip -c initrd.img > boot-unsigned.img
 ```
