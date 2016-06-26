@@ -271,8 +271,8 @@ modules=~/rockchip-3.0-rbox-kk/modules/lib/modules
 
 Create the rootfs image:
 ```
-sudo dd if=/dev/zero of=$rfs bs=1M count=3600
-sudo mkfs.ext4 -F -L linuxroot $rfs
+dd if=/dev/zero of=$rfs bs=1M count=3600
+mkfs.ext4 -F -L linuxroot $rfs
 sudo mount -o loop $rfs $targetdir
 ```
 
@@ -311,7 +311,7 @@ sudo chroot $targetdir
 
 Inside the chroot we need to set up the environment again:
 ```
-distro=wheezy
+distro=jessie
 export LANG=C
 ```
 
