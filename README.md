@@ -344,6 +344,11 @@ dpkg-reconfigure locales
 ```
 en_US.UTF-8 [*]
 
+Fix permission for sudo:
+```
+chmod u+s /usr/bin/sudo
+```
+
 Install some useful packages inside the chroot:
 ```
 apt-get install sudo openssh-server ntpdate less nano wireless-tools wpasupplicant
