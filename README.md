@@ -156,6 +156,12 @@ checking for ump/ump.h... yes
 checking for ump_open in -lUMP... yes
 checking for ump_cache_operations_control in -lUMP... yes
 ```
+If checking ump fails, run the following commands and try again:
+```
+sudo apt-get install libtool-bin
+sudo libtool --finish /usr/lib/arm-linux-gnueabihf
+```
+
 Make:
 ```
 make
@@ -175,6 +181,13 @@ sudo cp xorg.conf /etc/X11/xorg.conf.mali
 sudo rm /etc/X11/xorg.conf
 sudo ln -s /etc/X11/xorg.conf.mali /etc/X11/xorg.conf
 ```
+
+Edit Mali xorg.conf:
+```
+sudo nano /etc/X11/xorg.conf.mali
+```
+Add the line ```Option "AccelMethod" "CPU"``` to the "Device" section. Otherwise you may experience screen refresh issues when moving windows.
+
 
 Move the mesa-egl aside:
 ```
