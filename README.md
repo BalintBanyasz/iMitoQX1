@@ -379,14 +379,9 @@ You cannot run X as root (actually it's possible, but it's a bad practice), so y
 <pre>adduser <b>debian</b></pre>
 <pre>adduser <b>debian</b> sudo</pre>
 
-Install Xorg:
+Install Xorg, LightDM and LXDE:
 ```
-apt-get install xorg
-```
-
-Install LXDE:
-```
-apt-get install lxde
+apt-get install xorg lightdm lxde
 ```
 
 Modify lightdm configuration to enable autologin:
