@@ -58,7 +58,7 @@ systemctl start bluetooth.service
 
 Install Blueman:
 ```
-sudo apt-get install obex-data-server
+sudo apt-get install python-dbus obex-data-server
 wget https://github.com/radxa/apt/raw/gh-pages/rabian-stable/pool/main/b/blueman/blueman_1.23-git201403102151-1ubuntu1_armhf.deb
 sudo dpkg -i blueman_1.23-git201403102151-1ubuntu1_armhf.deb
 sudo apt-mark hold blueman
