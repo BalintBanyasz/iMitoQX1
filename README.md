@@ -274,6 +274,11 @@ Install the needed packages:
 sudo apt-get install build-essential lzop libncurses5-dev libssl-dev libc6:i386 lib32z1 lib32stdc++6 debootstrap
 ```
 
+Clone this repo:
+```
+git clone https://github.com/BalintBanyasz/iMitoQX1
+```
+
 Define some variables:
 ```
 rfs=rootfs.img
@@ -298,7 +303,7 @@ Copy kernel modules:
 ```
 sudo mkdir -p $targetdir/lib/modules
 sudo cp -r $modules/. $targetdir/lib/modules/
-sudo cp wlan.ko $targetdir/lib/modules/3.0.36+/
+sudo cp -r iMitoQX1/modules/. $targetdir/lib/modules/3.0.36+/
 ```
 
 Copy needed files from host to the target:
