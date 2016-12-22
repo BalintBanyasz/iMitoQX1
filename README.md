@@ -211,7 +211,7 @@ sudo apt-get install build-essential lzop libncurses5-dev libssl-dev libc6:i386 
 ```
 mkdir toolchain
 cd toolchain
-wget https://releases.linaro.org/13.04/components/toolchain/binaries/gcc-linaro-arm-linux-gnueabihf-4.7-2013.04-20130415_linux.tar.bz2
+wget https://releases.linaro.org/archive/13.04/components/toolchain/binaries/gcc-linaro-arm-linux-gnueabihf-4.7-2013.04-20130415_linux.tar.bz2
 tar xvf gcc-linaro-arm-linux-gnueabihf-4.7-2013.04-20130415_linux.tar.bz2
 rm gcc-linaro-arm-linux-gnueabihf-4.7-2013.04-20130415_linux.tar.bz2
 toolchain="$(pwd)/gcc-linaro-arm-linux-gnueabihf-4.7-2013.04-20130415_linux/bin"
@@ -271,7 +271,7 @@ rkcrc -k boot-unsigned.img boot.img
 ### 3) Creating a Debian root filesystem image
 Install the needed packages:
 ```
-sudo apt-get install build-essential lzop libncurses5-dev libssl-dev libc6:i386 lib32z1 lib32stdc++6
+sudo apt-get install build-essential lzop libncurses5-dev libssl-dev libc6:i386 lib32z1 lib32stdc++6 debootstrap
 ```
 
 Define some variables:
