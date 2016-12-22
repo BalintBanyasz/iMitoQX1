@@ -271,7 +271,7 @@ rkcrc -k boot-unsigned.img boot.img
 ### 3) Creating a Debian root filesystem image
 Install the needed packages:
 ```
-sudo apt-get install build-essential lzop libncurses5-dev libssl-dev libc6:i386 lib32z1 lib32stdc++6 debootstrap
+sudo apt-get install build-essential lzop libncurses5-dev libssl-dev libc6:i386 lib32z1 lib32stdc++6 debootstrap qemu-user-static
 ```
 
 Clone this repo:
