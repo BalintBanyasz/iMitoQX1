@@ -253,7 +253,7 @@ find . -name build | xargs rm
 
 ### 2) Building a boot image
 ```
-git clone https://github.com/radxa/initrd.git
+git clone https://github.com/BalintBanyasz/initrd
 make -C initrd
 ```
 The generated initrd.img image file will be located in the current folder.
